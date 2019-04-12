@@ -128,7 +128,6 @@ class AequasiMemcachedExtension extends Extension
         $definition
             ->addArgument(new Reference(sprintf('memcached.%s', $cluster)))
             ->addArgument($options);
-        $this->addClassesToCompile([$definition->getClass()]);
     }
 
     /**
