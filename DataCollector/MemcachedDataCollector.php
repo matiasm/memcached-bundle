@@ -27,7 +27,7 @@ class MemcachedDataCollector extends DataCollector
     /**
      * @var array
      */
-    private $data = [];
+    protected $data = [];
 
     /**
      * Add a Memcached object to the collector
