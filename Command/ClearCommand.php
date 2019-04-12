@@ -7,10 +7,13 @@
 namespace Aequasi\Bundle\MemcachedBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 /**
@@ -42,8 +45,10 @@ class ClearCommand extends ContainerAwareCommand
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output )
 	{
-		$dialog = $this->getHelperSet()->get('dialog');
+	    /** @var QuestionHelper $dialog */
+		$dialog = $this->getHelperSet()->get('question');
 		$cluster = $input->getArgument( 'cluster' );
+
 		try {
 			$memcached = $this->getContainer()->get( 'memcached.' . $cluster );
 			if( $input->getOption( 'clearAll' ) ) {
@@ -55,14 +60,17 @@ class ClearCommand extends ContainerAwareCommand
 					throw new \Exception( "Cannot clear a cluster that isn't using a prefix. Did you mean to --clearAll?" );
 				}
 
-				if( !$dialog->askConfirmation(
-					$output,
-					'<question>This function cannot be guaranteed to clear all of the keys. Are you sure you want to run this?</question>',
-					false
-				) ) return;
-				
-				$progress = $this->getHelperSet()->get('progress');
-				$progress->set( $output, 50 );
+				$question = new ConfirmationQuestion(
+				    'This function cannot be guaranteed to clear all of the keys. Are you sure you want to run this?',
+                    false
+                );
+
+				if ($dialog->ask($input, $output, $question) === false) {
+				    return;
+                }
+
+				$progress = new ProgressBar($output, 50);
+
 				for( $i = 0; $i <= 50; $i++ ) {
 					$keys = $memcached->getAllKeys();
 					foreach( $keys as $index => $key ) {
