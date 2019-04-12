@@ -14,25 +14,20 @@ use Symfony\Component\Yaml\Yaml;
  */
 class MemcachedDataCollector extends DataCollector
 {
-
 	/**
-	 * @var
+	 * @var array
 	 */
-	private $clusters;
+	private $clusters = [];
 
 	/**
 	 * @var array
 	 */
-	private $options;
+	private $options = [];
 
-	/**
-	 * Class constructor
-	 */
-	public function __construct()
-	{
-		$this->clusters = array();
-		$this->options  = array();
-	}
+    /**
+     * @var array
+     */
+	private $data = [];
 
 	/**
 	 * Add a Memcached object to the collector
@@ -175,4 +170,14 @@ class MemcachedDataCollector extends DataCollector
 
 		return $totals;
 	}
+
+    /**
+     * Clear $this->data so the instance can be reused
+     *
+     * Required for Symfony 4, but is introduced in Symfony 3
+     */
+    public function reset()
+    {
+        $this->data = [];
+    }
 }

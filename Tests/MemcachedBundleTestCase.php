@@ -11,16 +11,12 @@ use Doctrine\Common\Annotations\AnnotationReader;
 
 use Aequasi\Bundle\MemcachedBundle\DependencyInjection\AequasiMemcachedExtension;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
 
-/**
- * Class TestCase
- *
- * @package Aequasi\Bundle\MemcachedBundle\Tests
- */
-class TestCase extends \PHPUnit_Framework_TestCase
+class MemcachedBundle extends TestCase
 {
 
 	/**
